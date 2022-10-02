@@ -7,8 +7,11 @@ import (
 )
 
 func GenerateIDs(IDsChan chan string, wg *sync.WaitGroup) {
-	id := uuid.New()
-	IDsChan <- id.String()
+
+	for i := 0; i < 100; i++ {
+		id := uuid.New()
+		IDsChan <- fmt.Sprintf("%d. %d\n", i+1, id)
+	}
 	wg.Done()
 }
 func LogIds(IDsChan chan string, wg *sync.WaitGroup) {
