@@ -7,12 +7,14 @@ import (
 
 func main() {
 	IDsChan := make(chan string)
+	fakeIDsChan := make(chan string)
 	wg := &sync.WaitGroup{}
 
-	wg.Add(2)
+	wg.Add(3)
 
 	go goroutines.GenerateIDs(IDsChan, wg)
-	go goroutines.LogIds(IDsChan, wg)
+	go goroutines.GenerateFakeIDs(fakeIDsChan, wg)
+	go goroutines.LogIds(IDsChan, fakeIDsChan, wg)
 
 	wg.Wait()
 }
