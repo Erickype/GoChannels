@@ -24,3 +24,15 @@ func LogIds(IDsChan <-chan string, wg *sync.WaitGroup) {
 	}
 	wg.Done()
 }
+
+func GenerateFakeIDs(fakeIDsChan chan<- string, wg *sync.WaitGroup) {
+
+	for i := 0; i < 50; i++ {
+		id := uuid.New()
+		fakeIDsChan <- fmt.Sprintf("%d. %s\n", i+1, id.String())
+	}
+
+	close(fakeIDsChan)
+
+	wg.Done()
+}
