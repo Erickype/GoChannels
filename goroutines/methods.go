@@ -18,11 +18,18 @@ func GenerateIDs(IDsChan chan<- string, wg *sync.WaitGroup) {
 	wg.Done()
 }
 func LogIds(IDsChan <-chan string, fakeIDsChan <-chan string, wg *sync.WaitGroup) {
-
-	for id := range IDsChan {
-		fmt.Print(id)
+	for {
+		select {
+		case id, ok := <-IDsChan:
+			if ok {
+				fmt.Print("ID: ", id)
+			}
+		case id, ok := <-fakeIDsChan:
+			if ok {
+				fmt.Print("FakeID: " + id)
+			}
+		}
 	}
-	wg.Done()
 }
 
 func GenerateFakeIDs(fakeIDsChan chan<- string, wg *sync.WaitGroup) {
