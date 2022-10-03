@@ -17,7 +17,7 @@ func GenerateIDs(IDsChan chan<- string, wg *sync.WaitGroup) {
 
 	wg.Done()
 }
-func LogIds(IDsChan <-chan string, wg *sync.WaitGroup) {
+func LogIds(IDsChan <-chan string, fakeIDsChan <-chan string, wg *sync.WaitGroup) {
 
 	for id := range IDsChan {
 		fmt.Print(id)
