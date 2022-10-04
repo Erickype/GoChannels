@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-func GenerateIDs(IDsChan chan<- string, wg *sync.WaitGroup) {
+func GenerateIDs(IDsChan chan<- string, closedChan <-chan int, wg *sync.WaitGroup) {
 
 	for i := 0; i < 100; i++ {
 		id := uuid.New()
@@ -32,7 +32,7 @@ func LogIds(IDsChan <-chan string, fakeIDsChan <-chan string, wg *sync.WaitGroup
 	}
 }
 
-func GenerateFakeIDs(fakeIDsChan chan<- string, wg *sync.WaitGroup) {
+func GenerateFakeIDs(fakeIDsChan chan<- string, closedChan <-chan int, wg *sync.WaitGroup) {
 
 	for i := 0; i < 50; i++ {
 		id := uuid.New()
