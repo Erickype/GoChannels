@@ -15,7 +15,7 @@ func main() {
 
 	go goroutines.GenerateIDs(IDsChan, closedChan, wg)
 	go goroutines.GenerateFakeIDs(fakeIDsChan, closedChan, wg)
-	go goroutines.LogIds(IDsChan, fakeIDsChan, wg)
+	go goroutines.LogIds(IDsChan, fakeIDsChan, wg, closedChan)
 
 	wg.Wait()
 }
