@@ -40,6 +40,8 @@ func LogIds(IDsChan <-chan string, fakeIDsChan <-chan string, wg *sync.WaitGroup
 			break
 		}
 	}
+
+	wg.Done()
 }
 
 func GenerateFakeIDs(fakeIDsChan chan<- string, closedChan chan<- int, wg *sync.WaitGroup) {
