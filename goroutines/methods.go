@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-func GenerateIDs(IDsChan chan<- string, wg *sync.WaitGroup) {
+func GenerateIDs(IDsChan chan<- string, closedChan chan<- int, wg *sync.WaitGroup) {
 
 	for i := 0; i < 100; i++ {
 		id := uuid.New()
@@ -14,10 +14,11 @@ func GenerateIDs(IDsChan chan<- string, wg *sync.WaitGroup) {
 	}
 
 	close(IDsChan)
-
+	closedChan <- 1
 	wg.Done()
 }
-func LogIds(IDsChan <-chan string, fakeIDsChan <-chan string, wg *sync.WaitGroup) {
+func LogIds(IDsChan <-chan string, fakeIDsChan <-chan string, wg *sync.WaitGroup, closedChan chan int) {
+	closedCounter := 0
 	for {
 		select {
 		case id, ok := <-IDsChan:
@@ -28,11 +29,22 @@ func LogIds(IDsChan <-chan string, fakeIDsChan <-chan string, wg *sync.WaitGroup
 			if ok {
 				fmt.Print("FakeID: " + id)
 			}
+
+		case count, ok := <-closedChan:
+			if ok {
+				closedCounter += count
+			}
+		}
+		if closedCounter == 2 {
+			close(closedChan)
+			break
 		}
 	}
+
+	wg.Done()
 }
 
-func GenerateFakeIDs(fakeIDsChan chan<- string, wg *sync.WaitGroup) {
+func GenerateFakeIDs(fakeIDsChan chan<- string, closedChan chan<- int, wg *sync.WaitGroup) {
 
 	for i := 0; i < 50; i++ {
 		id := uuid.New()
@@ -40,6 +52,7 @@ func GenerateFakeIDs(fakeIDsChan chan<- string, wg *sync.WaitGroup) {
 	}
 
 	close(fakeIDsChan)
+	closedChan <- 1
 
 	wg.Done()
 }
